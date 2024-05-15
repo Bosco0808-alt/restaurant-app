@@ -35,7 +35,7 @@ const AdminComponent = ({
   return (
     <ul>
       {orderStore.map((order) => (
-        <li>{String(order.totalPrice)}</li>
+        <li key={order.id}>{String(order.totalPrice)}</li>
       ))}
     </ul>
   );
