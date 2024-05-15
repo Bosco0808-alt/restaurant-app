@@ -1,6 +1,7 @@
 "use server";
 import prisma from "./lib/prisma";
 import { StringKeyObject } from "./atomconfig";
+import "dotenv/config";
 
 export async function getTypes() {
   const types = await prisma.type.findMany();
@@ -46,4 +47,12 @@ export async function addOrder(products: string, tableNumber: string) {
       orderId: order.id,
     })),
   });
+}
+
+export async function checkAdminPassword(adminPassword: string) {
+  const realAdminPassword = process.env.ADMIN_PWD;
+  if (realAdminPassword === adminPassword) {
+    return true;
+  }
+  return false;
 }
