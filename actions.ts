@@ -56,3 +56,16 @@ export async function checkAdminPassword(adminPassword: string) {
   }
   return false;
 }
+
+export async function getOrder(adminPassword: string, tableNumber: string) {
+  const realAdminPassword = process.env.ADMIN_PWD;
+  if (realAdminPassword !== adminPassword) {
+    return [];
+  }
+  const order = await prisma.order.findMany({
+    where: {
+      tableNumber,
+    },
+  });
+  return order;
+}
