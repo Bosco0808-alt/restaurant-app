@@ -67,5 +67,33 @@ export async function getOrder(adminPassword: string, tableNumber: string) {
       tableNumber,
     },
   });
-  return order;
+  const amounts = await prisma.amount.findMany({
+    where: {
+      orderId: {
+        in: order.map((order) => order.id),
+      },
+    },
+  });
+  const products = await prisma.product.findMany({
+    where: {
+      id: {
+        in: amounts.map((amount) => amount.productId),
+      },
+    },
+  });
+  const result = order.map((order) => ({
+    id: order.id,
+    tableNumber: order.tableNumber,
+    totalPrice: order.totalPrice,
+    products,
+    amounts,
+  }));
+  return result;
+}
+
+export async function getAmount(adminPassword: string, orderId: string) {
+  const realAdminPassword = process.env.ADMIN_PWD;
+  if (realAdminPassword !== adminPassword) {
+    return [];
+  }
 }
