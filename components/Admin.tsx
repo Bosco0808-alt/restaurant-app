@@ -1,5 +1,12 @@
 import { getOrder } from "@/actions";
-import { useEffect, Fragment } from "react";
+import { useEffect } from "react";
+
+interface Amount {
+  id: string;
+  amount: number;
+  orderId: string;
+  productId: string;
+}
 
 interface Order {
   id: string;
@@ -12,12 +19,7 @@ interface Order {
     typesId: string | null;
     orderId: string | null;
   }[];
-  amounts: {
-    id: string;
-    amount: number;
-    orderId: string;
-    productId: string;
-  }[];
+  amounts: Amount[];
 }
 
 interface AdminComponentProps {
@@ -59,20 +61,27 @@ const AdminComponent = ({
     return foundProduct ? foundProduct.name : "";
   };
 
+  const getTotalPrice = (orders: Order[]) => {
+    let totalPrice: number = 0;
+    for (const order of orders) {
+      totalPrice += order.totalPrice;
+    }
+    return totalPrice;
+  };
   return (
     <ul>
-      {orderStore.map((order) => (
-        <Fragment key={order.id}>
-          <li>total price: {String(order.totalPrice)}</li>
-          <li>
+      <li>total price: {getTotalPrice(orderStore)}</li>
+      {
+        orderStore.map((order) => (
+          <li key={order.id}>
             order:{" "}
             {order.amounts.map(
               (amount) =>
                 `${amount.amount}x ${getProductById(amount.productId)}`
             )}
           </li>
-        </Fragment>
-      ))}
+        ))[0]
+      }
     </ul>
   );
 };
