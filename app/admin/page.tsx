@@ -42,6 +42,7 @@ const Admin = () => {
           className="form-control m-2"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          type="password"
         />
         <button type="submit" className="btn btn-primary m-2">
           Enter
