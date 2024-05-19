@@ -91,10 +91,17 @@ export async function getOrder(adminPassword: string, tableNumber: string) {
   return result;
 }
 
-export async function deleteOrder(orderId: string) {
-  await prisma.order.deleteMany({
-    where: {
-      id: orderId,
-    },
-  });
+export async function deleteOrder(orderIds: string[]) {
+  for (const orderId of orderIds) {
+    await prisma.amount.deleteMany({
+      where: {
+        orderId: orderId,
+      },
+    });
+    await prisma.order.delete({
+      where: {
+        id: orderId,
+      },
+    });
+  }
 }

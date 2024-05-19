@@ -1,5 +1,7 @@
-import { getOrder } from "@/actions";
+import { getOrder, deleteOrder } from "@/actions";
 import { useEffect } from "react";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 interface Amount {
   id: string;
@@ -35,6 +37,7 @@ const AdminComponent = ({
   setOrder,
   orderStore,
 }: AdminComponentProps) => {
+  const router = useRouter();
   useEffect(() => {
     (async () => {
       const orders = await getOrder(adminPassword, searchingTableNumber);
@@ -68,25 +71,59 @@ const AdminComponent = ({
     }
     return totalPrice;
   };
+
+  const onDeleteButtonClick = async (tableNumber: string[]) => {
+    const result = await Swal.fire({
+      icon: "warning",
+      title: "Are you sure you want to delete the orders?",
+      text: "You can NOT restore the orders after deleting them.",
+      showCancelButton: true,
+      confirmButtonText: "Delete them",
+    });
+    if (!result.isConfirmed) {
+      return;
+    }
+    await deleteOrder(tableNumber);
+    await Swal.fire({
+      icon: "success",
+      title: "Deletion success!",
+      text: "successfully deleted the orders!",
+    });
+    router.refresh();
+  };
   return (
-    <ul>
+    <>
+      <ul>
+        {getTotalPrice(orderStore) ? (
+          <li>total price: {getTotalPrice(orderStore)}</li>
+        ) : (
+          ""
+        )}
+        {
+          orderStore.map((order) => (
+            <li key={order.id}>
+              order:{" "}
+              {order.amounts.map(
+                (amount) =>
+                  `${amount.amount}x ${getProductById(amount.productId)}`
+              )}
+            </li>
+          ))[0]
+        }
+      </ul>
       {getTotalPrice(orderStore) ? (
-        <li>total price: {getTotalPrice(orderStore)}</li>
+        <button
+          className="btn btn-danger m-2"
+          onClick={async () => {
+            await onDeleteButtonClick(orderStore.map((order) => order.id));
+          }}
+        >
+          Delete order
+        </button>
       ) : (
         ""
       )}
-      {
-        orderStore.map((order) => (
-          <li key={order.id}>
-            order:{" "}
-            {order.amounts.map(
-              (amount) =>
-                `${amount.amount}x ${getProductById(amount.productId)}`
-            )}
-          </li>
-        ))[0]
-      }
-    </ul>
+    </>
   );
 };
 

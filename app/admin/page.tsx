@@ -27,8 +27,6 @@ const Admin = () => {
   const [searchTableNumber, setSearchTableNumber] = useState("");
   const [searchingTableNumber, setSearchingTableNumber] = useState("");
   const [orderStore, setOrderStore] = useState<Order[]>([]);
-  const [amountStore, setAmountStore] = useState();
-  const [productStore, setProductStore] = useState();
   const setOrder = (value: Order[]) => {
     setOrderStore(value);
   };
