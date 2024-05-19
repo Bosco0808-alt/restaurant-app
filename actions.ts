@@ -91,9 +91,10 @@ export async function getOrder(adminPassword: string, tableNumber: string) {
   return result;
 }
 
-export async function getAmount(adminPassword: string, orderId: string) {
-  const realAdminPassword = process.env.ADMIN_PWD;
-  if (realAdminPassword !== adminPassword) {
-    return [];
-  }
+export async function deleteOrder(orderId: string) {
+  await prisma.order.deleteMany({
+    where: {
+      id: orderId,
+    },
+  });
 }
