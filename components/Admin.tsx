@@ -70,7 +70,11 @@ const AdminComponent = ({
   };
   return (
     <ul>
-      <li>total price: {getTotalPrice(orderStore)}</li>
+      {getTotalPrice(orderStore) ? (
+        <li>total price: {getTotalPrice(orderStore)}</li>
+      ) : (
+        ""
+      )}
       {
         orderStore.map((order) => (
           <li key={order.id}>
